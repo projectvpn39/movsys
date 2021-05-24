@@ -9,12 +9,12 @@ def getOneTableData(url: str, class_of_table: str) -> pd.DataFrame:
     next_page  = requests.get(url, headers = headers )
     soup = BeautifulSoup(next_page.text, 'html.parser')
     table = soup.find('table', {'class': class_of_table})
-    columns = [th.text.replace('\n', '') for th in table.find('tr').find_all('th')]
-
+    columns = [th.text.replace('\n', '') for th in table.find('tr').find_all('th')] 
+    columns = columns[1:] # index 0 is an empty element
     trs = table.find_all('tr')[1:]
     rows = list()
     for tr in trs:
-        rows.append([td.text.replace('\n', '').replace('\xa0', '') for td in tr.find_all('td')])
+        rows.append([td.text.replace('\n', '').replace('\xa0', '') for td in tr.find_all('td')][1:]) # index 0 is an empty element
 
     df = pd.DataFrame(data=rows, columns=columns)
     return df
@@ -37,6 +37,7 @@ def getAllTableData(url: str, class_of_table: str)-> pd.DataFrame:
 def writeCSV(dataframe: pd.DataFrame, file_path : str,index: bool, header : bool ):
     try:
         dataframe.to_csv(file_path,index = index , header = header)
+        print("Write CSV file successfully: " + file_path )
     except:
         print("Cannot write CSV file from pandas Dataframe. Please Check the dataframe or path correct or not")
 
@@ -121,10 +122,15 @@ def showURLTag(url:str, attribute: str): # e.g. attribute =  'href
     for a in url_info:
         print ("Found the URL:", a[attribute])
 
+
+
+
+
+
 if __name__ == '__main__':
     url = 'https://reelgood.com/curated/trending-picks'
     class_of_table = 'css-1179hly'
     showURLTag(url,'href')
     df = getAllTableData(url,class_of_table)
     file_path = 'C:\\Users\\01723899\\Desktop\\webscrapping\\movsys\\' + 'trending-picks.csv'
-    writeCSV(df,file_path,index = True, header = True)
+    writeCSV(df,file_path,index = False, header = True)

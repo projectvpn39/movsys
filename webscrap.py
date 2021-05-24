@@ -18,21 +18,38 @@ def getOneTableData(url: str, class_of_table: str) -> pd.DataFrame:
 
     df = pd.DataFrame(data=rows, columns=columns)
     return df
+
 # to get all data from url 
 def getAllTableData(url: str, class_of_table: str)-> pd.DataFrame:
-    page_index = 0
-    pass
+
+    start_offset = 0
+    df = pd.DataFrame() # the dataframe stored all data
+    print("Loading the table one by one")
+    while checkAccessibility(getOffsetURL(url,start_offset),class_of_table): # check the table can be accessed or not first
+        target_url = getOffsetURL(url,start_offset)
+        sub_df = getOneTableData(target_url,class_of_table) # table for only one data frame
+        df = pd.concat([df,sub_df],ignore_index = True)
+        start_offset += sub_df.shape[0]
+    print("End loading the table")
+    return df
+
+# to write csv file from data frame
+def writeCSV(dataframe: pd.DataFrame, file_path : str,index: bool, header : bool ):
+    try:
+        dataframe.to_csv(file_path,index = index , header = header)
+    except:
+        print("Cannot write CSV file from pandas Dataframe. Please Check the dataframe or path correct or not")
 
 # to get how many rows in url
 def getAmountOfMovie(url: str,class_of_table: str, method = 'binary search') -> int:
     if method == 'binary search':
 
         print("=======Binary Search Start=======")
-        index = binarySearchAmount(url,class_of_table,67140,67150)
+        index = binarySearchAmount(url,class_of_table,0,67150)
         print("=======Binary Search End=======")
         return index
 
-# by using binary search method, how many row in url can be found
+# by using binary search method, how many rows in url can be found
 def binarySearchAmount(url: str,class_of_table: str,low: int, high: int) -> int:
 
     # search Accessibility
@@ -103,10 +120,11 @@ def showURLTag(url:str, attribute: str): # e.g. attribute =  'href
     url_info = searchURL(url)
     for a in url_info:
         print ("Found the URL:", a[attribute])
-if __name__ == '__main__':
 
-    url = 'https://reelgood.com/movies'
+if __name__ == '__main__':
+    url = 'https://reelgood.com/curated/trending-picks'
     class_of_table = 'css-1179hly'
-    #df = getOneTableData(url, class_of_table)
-    #showURLTag(url,'href')
-    print(getAmountOfMovie(url,class_of_table))
+    showURLTag(url,'href')
+    df = getAllTableData(url,class_of_table)
+    file_path = 'C:\\Users\\01723899\\Desktop\\webscrapping\\movsys\\' + 'trending-picks.csv'
+    writeCSV(df,file_path,index = True, header = True)

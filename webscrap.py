@@ -39,14 +39,14 @@ def writeCSV(dataframe: pd.DataFrame, file_path : str,index: bool, header : bool
         dataframe.to_csv(file_path,index = index , header = header)
         print("Write CSV file successfully: " + file_path )
     except:
-        print("Cannot write CSV file from pandas Dataframe. Please Check the dataframe or path correct or not")
+        print("Cannot write CSV file from pandas Dataframe. Please Check the dataframe or file path correct or not")
 
 # to get how many rows in url
 def getAmountOfMovie(url: str,class_of_table: str, method = 'binary search') -> int:
     if method == 'binary search':
 
         print("=======Binary Search Start=======")
-        index = binarySearchAmount(url,class_of_table,0,67150)
+        index = binarySearchAmount(url,class_of_table,0,1000000)
         print("=======Binary Search End=======")
         return index
 
@@ -132,5 +132,12 @@ if __name__ == '__main__':
     class_of_table = 'css-1179hly'
     showURLTag(url,'href')
     df = getAllTableData(url,class_of_table)
-    file_path = 'C:\\Users\\01723899\\Desktop\\webscrapping\\movsys\\' + 'trending-picks.csv'
+    file_path = 'C:\\Users\\01723899\\Desktop\\webscrapping\\movsys\\' + 'trending_picks.csv'
     writeCSV(df,file_path,index = False, header = True)
+
+    url_2 = 'https://reelgood.com/tv'
+    class_of_table = 'css-1179hly'
+    #getAmountOfMovie(url_2,class_of_table)
+    #df_2 = getAllTableData(url_2,class_of_table)
+    #file_path_2 = 'C:\\Users\\01723899\\Desktop\\webscrapping\\movsys\\' + 'tv.csv'
+    #writeCSV(df_2,file_path_2,index = False, header = True)

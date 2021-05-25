@@ -58,11 +58,11 @@ def binarySearchAmount(url: str,class_of_table: str,low: int, high: int) -> int:
     target = [True,False]
     
     if high >= low:
-
+        # modify midpoint
         mid = (high + low) // 2 
         high_access = checkAccessibility(getOffsetURL(url,high),class_of_table)
         low_access = checkAccessibility(getOffsetURL(url,low),class_of_table)
-        mid_and_plus1_access = [checkAccessibility(getOffsetURL(url,mid),class_of_table), checkAccessibility(getOffsetURL(url,mid + 1),class_of_table)]
+        mid_and_plus1_access = [checkAccessibility(getOffsetURL(url,mid),class_of_table), checkAccessibility(getOffsetURL(url,mid + 1),class_of_table)] # eg. [True, False] or [True, True]
 
         if mid_and_plus1_access == target:
             return mid
@@ -79,6 +79,7 @@ def binarySearchAmount(url: str,class_of_table: str,low: int, high: int) -> int:
         print('Error: parameter "high" should be higher than "low"')
         return -1
 
+# to check whether data table can be created by the URL
 def checkAccessibility(url: str,class_of_table: str):
     try:
         df = getOneTableData(url,class_of_table)
